@@ -1,0 +1,164 @@
+﻿﻿@{
+    ViewBag.Title = "Twitter Integration";
+}
+<div class="container">
+    <div class="col-lg-4 col-sm-12 text-center col-lg-push-2">
+        <h5 class="pull-right">Connected: <span id="feedClients">0</span></h5>
+        <div class="well">
+            <h4 class="alert-info"><i class="fa fa-twitter"></i> Feeds <span id="feedText"></span></h4>
+            <div class="input-group">
+                <input type="text" id="tfeed" class="form-control input-sm chat-input" placeholder="Write your message here..." maxlength="15"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-twitter btn-sm" id="tfeedClick"><i class="fa fa-twitter"></i> | Get Feeds</button>
+                </span>
+            </div>
+            <hr data-brackets-id="12673">
+            <ul data-brackets-id="12674" id="feeddata" class="list-unstyled ui-sortable">              
+                @if (!string.IsNullOrEmpty(ViewBag.statusTweetsCount.ToString()))
+                {
+                    foreach (LinqToTwitter.Status item in ViewBag.statusTweets)
+                    {
+                        <strong class="pull-left primary-font alert-success">@item.InReplyToScreenName</strong>
+                        <small class="pull-right text-muted">
+                            <span class="glyphicon glyphicon-time"></span>@item.CreatedAt
+                        </small>
+                        <li class="ui-state-default">@item.Text</li>
+                    }
+                }                
+            </ul>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 col-sm-12 text-center col-lg-push-2">
+        <h5 class="pull-right">Connected: <span id="handlerClients">0</span></h5>
+        <div class="well">
+            <h4 class="alert-danger"><i class="fa fa-twitter"></i> Handler <span id="handlerText"></span></h4>
+            <div class="input-group">
+                <input type="text" id="thandler" class="form-control input-sm chat-input" placeholder="Write your message here..." maxlength="15" />
+                <span class="input-group-btn">
+                    <button class="btn btn-pinterest btn-sm" id="thandlerClick"><i class="fa fa-twitter"></i> | Get Handler</button>
+                </span>
+            </div>
+            <hr data-brackets-id="12673">
+            <ul data-brackets-id="12674" id="handlerdata" class="list-unstyled ui-sortable">
+                @if (!string.IsNullOrEmpty(ViewBag.hashTweetsCount.ToString()))
+                {
+                    foreach (LinqToTwitter.Status item in ViewBag.hashTweets)
+                    {
+                        <strong class="pull-left primary-font btn-primary">@item.InReplyToScreenName</strong>
+                        <small class="pull-right text-muted">
+                            <span class="glyphicon glyphicon-time"></span>@item.CreatedAt
+                        </small>
+                        <li class="ui-state-default">@item.Text</li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+
+</div>   
+
+@section scripts{
+  
+    <script type="text/javascript">
+        (function() {
+
+            var mediaHub = $.connection.twitty;
+
+            $.connection.hub.logging = true;
+
+            $.connection.hub.start();
+
+            mediaHub.client.speak = function(msg) {
+
+                var tempHandlerData = $("#handlerdata");
+                if (msg.length > 0) {
+                    console.log(msg);
+                    var jsonMessage = JSON.parse(msg);
+                    tempHandlerData.empty();
+                    for (i = 0; i < jsonMessage["hashTweets"]["Statuses"].length; i++) {
+
+                        if ((jsonMessage.hashTweets.Statuses[i].InReplyToScreenName !== undefined) && (jsonMessage.hashTweets.Statuses[i].InReplyToScreenName !== null)) {
+                            tempHandlerData.append('<strong class="pull-left primary-font btn-primary">' + jsonMessage.hashTweets.Statuses[i].InReplyToScreenName + '</strong>');
+                        } else {
+                            tempHandlerData.append('<strong class="pull-left primary-font btn-primary"> </strong>');
+                        }
+                        tempHandlerData.append('<small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>' + jsonMessage.hashTweets.Statuses[i].CreatedAt + '</small>');
+                        tempHandlerData.append('<li class="ui-state-default">' + jsonMessage.hashTweets.Statuses[i].Text + '</li><br />');
+                    }
+
+                    $("#handlerText").empty().append(jsonMessage.hashTag);
+                    $("#handlerClients").empty().append(jsonMessage.count);
+
+                } else {
+                    tempHandlerData.append.text('<li class="ui-state-default">No data found</li><br />');
+                }
+
+            };
+
+
+            $("#thandlerClick").click(function() {
+
+                setInterval(function() {
+                    var mytext = $("#thandler").val();
+                    $("#thandler").empty().append(mytext);
+                    mediaHub.server.callHandler(mytext);
+                }, 15000);
+
+            });
+
+
+            mediaHub.client.feed = function(msg) {
+
+                var tempHandlerData = $("#feeddata");
+                if (msg.length > 0) {
+                    var jsonMessage = JSON.parse(msg);
+                    console.log(jsonMessage);
+                    tempHandlerData.empty();
+                    for (i = 0; i < jsonMessage["statusTweets"].length; i++) {
+
+                        if ((jsonMessage.statusTweets[i].InReplyToScreenName !== undefined) && (jsonMessage.statusTweets[i].InReplyToScreenName !== null)) {
+                            tempHandlerData.append('<strong class="pull-left primary-font btn-primary">' + jsonMessage.statusTweets[i].InReplyToScreenName + '</strong>');
+                        } else {
+                            tempHandlerData.append('<strong class="pull-left primary-font btn-primary"> </strong>');
+                        }
+                        tempHandlerData.append('<small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>' + jsonMessage.statusTweets[i].CreatedAt + '</small>');
+                        tempHandlerData.append('<li class="ui-state-default">' + jsonMessage.statusTweets[i].Text + '</li><br />');
+                    }
+
+                    $("#feedText").empty().append(jsonMessage.feedTag);
+                    $("#feedClients").empty().append(jsonMessage.count);
+                } else {
+                    tempHandlerData.append.text('<li class="ui-state-default">No data found</li><br />');
+                }
+
+            };
+
+            $.connection.hub.start().done(function(e)
+            {
+                mediaHub.server.feedHandler("");
+            }).fail(function (error) {
+                console.error(error);
+            });
+
+
+            $("#tfeedClick").click(function () {
+
+               //Call the server side method for every 5 seconds
+                setInterval(function () {
+                    var mytext = $("#tfeed").val();
+                    $("#feedtext").empty().append(mytext);
+                    $("#tfeed").empty().append(mytext);
+                    mediaHub.server.feedHandler(mytext);
+                }, 10000);
+
+
+            });
+
+
+
+
+        })();
+    </script>  
+}

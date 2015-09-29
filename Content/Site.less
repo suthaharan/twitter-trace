@@ -1,0 +1,163 @@
+﻿
+@import "colors";
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background-color: @main-color;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+    color:@validation-error;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid @validation-error;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: @validation-error;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.list-group{
+	width: 500px;
+}
+.bs-example{
+    margin: 20px;
+}
+
+
+
+li.ui-state-default{
+    background:#fff0;
+    border:none;
+    border-bottom:1px solid #ddd;
+    text-align: left;
+    padding-bottom: 10px;
+}
+
+li.ui-state-default:last-child{
+    border-bottom:none;
+}
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:400);
+body {
+  background-color:#fff;
+  -webkit-font-smoothing: antialiased;
+  font: normal 14px Roboto,arial,sans-serif;
+}
+
+.btn,.form-control,.well {
+    border-radius:1px;
+    box-shadow:0 0 0;
+}
+
+.form-control {
+    border-color:#d7d7d7;
+}
+
+.btn-primary {
+    border-color:transparent;
+}
+
+.btn-primary, .list-group-item.active:focus {
+    background-color:#4285f4;
+} 
+
+.btn-plus {
+    background-color:#ffffff;
+    border-width:1px;
+    border-color:#dddddd;
+    box-shadow:1px 1px 0 #999999;
+    border-radius:3px;color:#666666;
+    text-shadow:0 0 1px #bbbbbb;
+}
+
+.well,.panel {
+    border-color:#d2d2d2;
+    box-shadow:0 1px 0 #cfcfcf;
+    border-radius:3px;
+}
+
+hr {
+ border-color:#ececec;
+}
+
+button {
+ outline: 0;
+}
+
+.btn span{
+ color:#666666;
+}
+
+.list-group-item:first-child,.list-group-item:last-child {
+ border-radius:0;
+}
+
+h3 { 
+ border:0 solid #efefef; 
+ border-bottom-width:1px;
+ padding-bottom:10px;
+}
+
+
+.color-span-wrap div {
+    display: block;
+    float: left;
+    height: 3px;
+    width: 20%;
+}
+
+.color-span-wrap.color-span-wrap--bottom {
+bottom: 0;
+}
+.color-span-wrap {
+width: 100%;
+position: absolute;
+left: 0;
+}
+.color-span-wrap div:nth-child(1) {
+background: #4285f4;
+}
+
+.color-span-wrap div:nth-child(2) {
+background: #b6ff00;
+}
+
+.color-span-wrap div:nth-child(3) {
+background: #fc3867;
+}
+
+.color-span-wrap div:nth-child(4) {
+background: #fa9509;
+}
+.color-span-wrap div:nth-child(5) {
+background: #6d43f9;
+}
